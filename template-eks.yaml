@@ -1,0 +1,185 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-eks-instance-backstage
+  title: Create an EKS using Backstage
+  description: Create an EKS Cluster to deploy your application
+  tags: ['recommended']
+spec:
+  owner: github.com/prayankag
+  type: service
+  parameters:
+    - title: Backstage Input
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the Backstage catalog app
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: A short description of the module - put full details in the README!
+          type: string
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: EKS Creation
+      # required:
+      #    - ClusterName
+      #    - Region
+      #    - NumberOfNodes
+      #    - InstanceType 
+      properties:
+        tfVars:
+          properties:
+            ClusterName:
+              title: Cluster Name.
+              type: string
+              description: Name of the eks cluster to be created.
+              ui:autofocus: true
+              ui:options:
+                rows: 5
+
+            Region:
+              title:  AWS Region
+              type: string
+              description: Name of the region where you want to create your create eks cluster eg:- us-east-1, ap-south-1 etc.
+
+            ClusterVersion:
+              title: Cluster version.
+              type: string
+              description: Eks cluster version that you want to deploy, for eg:- 1.29, 1.30 etc.
+              enum:
+                - "1.28"
+                - "1.29"
+                - "1.30"
+
+            InstanceType:
+              title: Type of Instance.
+              type: string
+              description: Type of the instance that you want to deploy, for eg:- t2.medium, t3.medium etc.
+              enum:
+                - t2.medium
+                - t2.small
+                - t2.micro
+                - t3.medium
+
+            private_subnets:
+              default:
+                - 10.1.1.0/24
+                - 10.1.2.0/24
+              description: Private Subnets CIDRs. 254 IPs per Subnet/AZ for Private NAT + NLB + Airflow + EC2 Jumphost etc.
+              items:
+                type: string
+              type: array
+
+            public_subnets:
+              default:
+                - 10.1.0.0/26
+                - 10.1.0.64/26
+              description: Public Subnets CIDRs. 62 IPs per Subnet/AZ
+              items:
+                type: string
+              type: array
+        action:
+          title: action
+          type: string
+          description: What action do you want to perform? Create or delete?
+          enum:
+            - plan
+            - apply
+            - destroy
+        aws_role_arn:
+          title: AWS Role 
+          type: string
+          description: Choose the Aws role ARN.
+          default: arn:aws:iam::xxxxxxx:role/github-oidc-role
+    
+    - title: Choose a Repository Location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Location of the repository
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+# Getting the all the files/details from the template
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        # url: ./content  # Location of the content directory where catlog-info.yaml file is present for the template
+        url: https://github.com/prayankag/backstage-ec2-template/tree/main/templates/
+        values:
+          name: ${{ parameters.name }}
+          owner: ${{ parameters.owner }}
+          description: ${{ parameters.description }}
+          repo_name: ${{ (parameters.repoUrl | parseRepoUrl)["repo"] }}
+          repo_owner: ${{ (parameters.repoUrl | parseRepoUrl)["owner"] }}
+          AWS_ROLE_ARN: ${{ parameters.aws_role_arn}}
+
+# Publish the content of the current working directory to our github directory
+    - id: publish
+      name: Publishing Details
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: This repo is to create an ec2 instance ${{ parameters.ClusterName }} using backstage.
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        requireCodeOwnerReviews: true
+    
+    - id: set-permissions
+      name: Set Workflow Permissions
+      action: http:request
+      input:
+        method: PUT
+        url: https://api.github.com/repos/${{ (parameters.repoUrl | parseRepoUrl)["owner"] }}/${{ (parameters.repoUrl | parseRepoUrl)["repo"] }}/actions/permissions/workflow
+        headers:
+          Authorization: Bearer  ${{ secrets.GITHUB_PAT_TOKEN }}
+          Accept: application/vnd.github+json
+        body:
+          default_workflow_permissions: write
+
+# Triggering CI-CD to create resource in our case github action. 
+    - id: github-action
+      name: Starting GitHub action
+      action: github:actions:dispatch
+      input:
+        workflowId:  instance.yaml # ID of GitHub action WorkFlow
+        repoUrl: ${{ parameters.repoUrl }}
+        branchOrTagName: 'main'
+        workflowInputs:
+          tfVars: |
+            ${{ parameters.tfVars | dump }}
+          action: ${{ parameters.action }}
+
+# Registering new component in the catalog of backstage.
+    - id: register
+      name: Registering the new Component 
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml' # where the info of the catalog is stored.
+
+# Output links  are displayed to the user after the template execution.
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
