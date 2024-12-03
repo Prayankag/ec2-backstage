@@ -48,12 +48,12 @@ spec:
         Region:
           title:  AWS Region
           type: string
-          description: Name of the region where you want to create your create-ec2-instance eg:- us-east-1, ap-south-1 etc.
+          description: Name of the region where you want to create your EC2 instance, eg: us-east-1, ap-south-1 etc.
 
         InstanceType:
           title: Type of Instance.
           type: string
-          description: Type of the instance that you want to deploy, for eg:- t2.medium, t3.medium etc.
+          description: Type of the instance that you want to deploy, for eg: t2.medium, t3.medium etc.
           enum:
             - t2.medium
             - t2.small
@@ -81,41 +81,51 @@ spec:
               - github.com
 
   steps:
-# Getting the all the files/details from the template
+    # Getting all the files/details from the template
     - id: fetch-base
       name: Fetch Base
       action: fetch:template
       input:
-        # url: ./content  # Location of the content directory where catlog-info.yaml file is present for the template
-        url: https://github.com/Prayankag/backstage-ec2-template/tree/main/templates/
+        url: https://github.com/prayankag/ec2-backstage/tree/main/templates/
         values:
           name: ${{ parameters.name }}
           owner: ${{ parameters.owner }}
           description: ${{ parameters.description }}
           repo_name: ${{ (parameters.repoUrl | parseRepoUrl)["repo"] }}
           repo_owner: ${{ (parameters.repoUrl | parseRepoUrl)["owner"] }}
+          InstanceName: ${{ parameters.InstanceName }}
+          Region: ${{ parameters.Region }}
+          InstanceType: ${{ parameters.InstanceType }}
 
-# Publish the content of the current working directory to our github directory
+    # Generate terraform.tfvars file
+    - id: generate-terraform-tfvars
+      name: Generate terraform.tfvars
+      run: |
+        echo "region = \"${{ parameters.Region }}\"" >> terraform.tfvars
+        echo "instance_type = \"${{ parameters.InstanceType }}\"" >> terraform.tfvars
+        echo "instance_name = \"${{ parameters.InstanceName }}\"" >> terraform.tfvars
+
+    # Publish the content of the current working directory to the GitHub directory
     - id: publish
       name: Publishing Details
       action: publish:github
       input:
         allowedHosts: ['github.com']
-        description: This repo is to create an ec2 instance ${{ parameters.InstanceName }} using backstage.
+        description: This repo is to create an EC2 instance ${{ parameters.InstanceName }} using Backstage.
         repoUrl: ${{ parameters.repoUrl }}
-        # repoVisibility: public # or 'internal' or 'private'
+        repoVisibility: public
         defaultBranch: main
         requireCodeOwnerReviews: true
         permissions:
           actions: write
           contents: write
 
-# Triggering CI-CD to create resource in our case github action. 
+    # Triggering CI-CD to create resource (in this case, a GitHub action).
     - id: github-action
       name: Starting GitHub action
       action: github:actions:dispatch
       input:
-        workflowId:  instance.yaml # ID of GitHub action WorkFlow
+        workflowId: instance.yaml # ID of the GitHub action workflow
         repoUrl: ${{ parameters.repoUrl }}
         branchOrTagName: 'main'
         workflowInputs:
@@ -124,15 +134,14 @@ spec:
           instanceType: ${{ parameters.InstanceType }}
           action: ${{ parameters.action }}
 
-# Registering new component in the catalog of backstage.
+    # Registering the new component in the Backstage catalog
     - id: register
-      name: Registering the new Component 
+      name: Registering the new Component
       action: catalog:register
       input:
-        repoContentsUrl: ${{steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml' # where the info of the catalog is stored.
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml' # Path where catalog info is stored
 
-# Output links  are displayed to the user after the template execution.
   output:
     links:
       - title: Repository
