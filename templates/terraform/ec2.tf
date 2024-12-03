@@ -10,8 +10,8 @@ terraform {
 provider "aws" {
   region = var.region
   # profile = var.aws_profile
-  access_key = var.normala
-  secret_key =var.normals
+  access_key = var.id
+  secret_key =var.normal
 }
 
 # Create a VPC
