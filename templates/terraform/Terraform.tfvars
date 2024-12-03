@@ -1,4 +1,4 @@
-region             = "${{ values.Region }}"
+region             = ${{ values.Region }}
 vpc_cidr           = "10.0.0.0/16"
 vpc_name           = "vpc"
 subnet_cidr        = "10.0.1.0/24"
@@ -7,5 +7,5 @@ igw_name           = "igw"
 route_table_name   = "route-table"
 sg_name            = "sg"
 ami                = "ami-0453ec754f44f9a4a"
-instance_type      = "${{ values.InstanceType }}"
-instance_name      = "${{ values.InstanceName }}"
+instance_type      = ${{ values.InstanceType }}
+instance_name      = ${{ values.InstanceName }}
