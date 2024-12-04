@@ -57,11 +57,3 @@ variable "instance_name" {
   description = "Name of the EC2 instance"
   type        = string
 }
-
-variable "access_key"{
-  type = string
-}
-
-variable "secret_key"{
-  type = string
-}
