@@ -69,11 +69,11 @@ jobs:
       # Generate the Terraform execution plan
       - name: Terraform Plan
         run: terraform plan \
+          -chdir=./terraform \
           -var "instanceName=${{ '${{ github.event.inputs.instanceName }}' }}" \
           -var "awsRegion=${{ '${{ github.event.inputs.awsRegion }}' }}" \
           -var "instanceType=${{ '${{ github.event.inputs.instanceType }}' }}" \
           -out=tfplan
-        working-directory: ./terraform
 
       # Apply the Terraform execution plan
       - name: Terraform Apply
