@@ -7,13 +7,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.region
-  # profile = var.aws_profile
-  access_key = var.id
-  secret_key =var.normal
-}
-
 # Create a VPC
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
