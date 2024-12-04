@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: create-ec2-instance-backstage
   title: Create an EC2 Instance using Backstage
-  description: Create an Instance to deploy your application
+  description: Create an Instance to deploy your application, all input values are approved by manager.
   tags: ['recommended']
 spec:
   owner: github.com/Prayankag
