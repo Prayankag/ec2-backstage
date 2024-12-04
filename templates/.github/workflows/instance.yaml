@@ -77,7 +77,7 @@ jobs:
 
       # Apply the Terraform execution plan
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve "tfplan"
         working-directory: ./terraform
 
   # Job to destroy the EC2 instance
