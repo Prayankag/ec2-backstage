@@ -27,10 +27,10 @@ jobs:
     steps:
       - name: Display Input Values
         run: |
-          echo "Instance Name: ${{ github.event.inputs.instanceName }}"
-          echo "AWS Region: ${{ github.event.inputs.awsRegion }}"
-          echo "Instance Type: ${{ github.event.inputs.instanceType }}"
-          echo "Action: ${{ github.event.inputs.action }}"
+          echo "Instance Name: ${{ '${{ github.event.inputs.instanceName }}' }} "
+          echo "AWS Region: ${{ '${{ github.event.inputs.awsRegion }}' }}"
+          echo "Instance Type: ${{ '${{ github.event.inputs.instanceType }}' }}"
+          echo "Action: ${{ '${{ github.event.inputs.action }}' }}"
 
   # Job to apply the EC2 instance
   apply_ec2:
@@ -47,9 +47,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ github.event.inputs.awsRegion }}
+          aws-access-key-id: ${{ '${{ secrets.AWS_ACCESS_KEY_ID }}' }}
+          aws-secret-access-key: ${{ '${{ secrets.AWS_SECRET_ACCESS_KEY }}' }}
+          aws-region: ${{ '${{ github.event.inputs.awsRegion }}' }}
 
       # Initialize Terraform
       - name: Terraform Init
@@ -69,9 +69,9 @@ jobs:
       # Generate the Terraform execution plan
       - name: Terraform Plan
         run: terraform plan \
-          -var "instanceName=${{ github.event.inputs.instanceName }}" \
-          -var "awsRegion=${{ github.event.inputs.awsRegion }}" \
-          -var "instanceType=${{ github.event.inputs.instanceType }}" \
+          -var "instanceName=${{ '${{ github.event.inputs.instanceName }}' }}" \
+          -var "awsRegion=${{ '${{ github.event.inputs.awsRegion }}' }}" \
+          -var "instanceType=${{ '${{ github.event.inputs.instanceType }}' }}" \
           -out=tfplan
         working-directory: ./terraform
 
@@ -95,9 +95,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ github.event.inputs.awsRegion }}
+          aws-access-key-id: ${{ '${{ secrets.AWS_ACCESS_KEY_ID }}' }}
+          aws-secret-access-key: ${{ '${{ secrets.AWS_SECRET_ACCESS_KEY }}' }}
+          aws-region: ${{ '${{ github.event.inputs.awsRegion }}' }}
 
       # Initialize Terraform
       - name: Terraform Init
