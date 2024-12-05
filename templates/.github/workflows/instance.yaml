@@ -82,7 +82,7 @@ jobs:
     needs:
       - display-input-values
     # Execute this job only if the action input is "destroy"
-    elif: ${{ '${{ github.event.inputs.action }}' }} == 'destroy'
+    if: ${{ '${{ github.event.inputs.action }}' }} == 'destroy'
     steps:
       # Checkout the code from the repository
       - name: Checkout Code
