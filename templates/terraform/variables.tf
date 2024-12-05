@@ -1,4 +1,4 @@
-variable "region" {
+variable "awsRegion" {
   description = "AWS region to deploy resources"
   type        = string
 }
@@ -6,54 +6,64 @@ variable "region" {
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
+  default     = "10.0.0.0/16"
 }
 
 variable "vpc_name" {
   description = "Name of the VPC"
   type        = string
+  default     = "vpc"
 }
 
 variable "subnet_cidr" {
   description = "CIDR block for the subnet"
   type        = string
+  default     = "10.0.1.0/24"
 }
 
-variable "availability_zone" {
-  description = "Availability zone for the subnet"
-  type        = string
-}
+
+# variable "availability_zone" {
+#   description = "Availability zone for the subnet"
+#   type        = string
+#   default     = "us-east-1a"  # Example AZ, change if needed
+# }
 
 variable "subnet_name" {
   description = "Name of the subnet"
   type        = string
+  default     = "subnet"
 }
 
 variable "igw_name" {
   description = "Name of the Internet Gateway"
   type        = string
+  default     = "igw"
 }
 
 variable "route_table_name" {
   description = "Name of the route table"
   type        = string
+  default     = "route-table"
 }
 
 variable "sg_name" {
   description = "Name of the security group"
   type        = string
+  default     = "sg"
 }
 
 variable "ami" {
   description = "AMI ID for the EC2 instance"
   type        = string
+  default     = "ami-0453ec754f44f9a4a"
 }
 
-variable "instance_type" {
+variable "instanceType" {
   description = "Instance type for the EC2 instance"
   type        = string
 }
 
-variable "instance_name" {
+variable "instanceName" {
   description = "Name of the EC2 instance"
   type        = string
 }
