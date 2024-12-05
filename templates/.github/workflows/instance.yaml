@@ -109,9 +109,9 @@ jobs:
 
       # Generate the Terraform destroy plan
       - name: Terraform Plan Destroy
-        run: terraform plan -destroy -out=tfplan
+        run: terraform plan -destroy -var "instanceName=${{ '${{ github.event.inputs.instanceName }}' }}" -var "awsRegion=${{ '${{ github.event.inputs.awsRegion }}' }}" -var "instanceType=${{ '${{ github.event.inputs.instanceType }}' }}" -out=tfplan
         working-directory: ./terraform
-
+        
       # Apply the Terraform destroy plan
       - name: Terraform Destroy
         run: terraform apply -auto-approve tfplan
