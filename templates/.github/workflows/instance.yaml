@@ -27,17 +27,17 @@ jobs:
     steps:
       - name: Display Input Values
         run: |
-          echo "Instance Name: ${{ '${{ github.event.inputs.instanceName }}' }} "
-          echo "AWS Region: ${{ '${{ github.event.inputs.awsRegion }}' }}"
-          echo "Instance Type: ${{ '${{ github.event.inputs.instanceType }}' }}"
-          echo "Action: ${{ '${{ github.event.inputs.action }}' }}"
+          echo "Instance Name: ${{ github.event.inputs.instanceName }} "
+          echo "AWS Region: ${{ github.event.inputs.awsRegion }}"
+          echo "Instance Type: ${{ github.event.inputs.instanceType }}"
+          echo "Action: ${{ github.event.inputs.action }}"
 
   # Job to apply the EC2 instance
   apply_ec2:
     runs-on: ubuntu-latest
     needs: display-input-values
     # Execute this step only if the action input is "apply"
-    if: ${{ '${{ github.event.inputs.action }}' }} == 'apply'
+    if: ${{ github.event.inputs.action }} == 'apply'
     steps:
       # Checkout the code from the repository
       - name: Checkout Code
@@ -47,9 +47,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ '${{ secrets.AWS_ACCESS_KEY_ID }}' }}
-          aws-secret-access-key: ${{ '${{ secrets.AWS_SECRET_ACCESS_KEY }}' }}
-          aws-region: ${{ '${{ github.event.inputs.awsRegion }}' }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ github.event.inputs.awsRegion }}
 
       # Initialize Terraform
       - name: Terraform Init
@@ -68,7 +68,7 @@ jobs:
 
       # Generate the Terraform execution plan
       - name: Terraform Plan
-        run: terraform plan -var "instanceName=${{ '${{ github.event.inputs.instanceName }}' }}" -var "awsRegion=${{ '${{ github.event.inputs.awsRegion }}' }}" -var "instanceType=${{ '${{ github.event.inputs.instanceType }}' }}" -out=tfplan
+        run: terraform plan -var "instanceName=${{ github.event.inputs.instanceName }}" -var "awsRegion=${{ github.event.inputs.awsRegion }}" -var "instanceType=${{ github.event.inputs.instanceType }}" -out=tfplan
         working-directory: ./terraform
 
       # Apply the Terraform execution plan
@@ -82,7 +82,7 @@ jobs:
     needs:
       - display-input-values
     # Execute this job only if the action input is "destroy"
-    if: ${{ '${{ github.event.inputs.action }}' }} == 'destroy'
+    if: ${{ github.event.inputs.action }} == 'destroy'
     steps:
       # Checkout the code from the repository
       - name: Checkout Code
@@ -92,9 +92,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ '${{ secrets.AWS_ACCESS_KEY_ID }}' }}
-          aws-secret-access-key: ${{ '${{ secrets.AWS_SECRET_ACCESS_KEY }}' }}
-          aws-region: ${{ '${{ github.event.inputs.awsRegion }}' }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ github.event.inputs.awsRegion }}
 
       # Initialize Terraform
       - name: Terraform Init
@@ -108,7 +108,7 @@ jobs:
 
       # Generate the Terraform destroy plan
       - name: Terraform Plan Destroy
-        run: terraform plan -destroy -var "instanceName=${{ '${{ github.event.inputs.instanceName }}' }}" -var "awsRegion=${{ '${{ github.event.inputs.awsRegion }}' }}" -var "instanceType=${{ '${{ github.event.inputs.instanceType }}' }}" -out=tfplan
+        run: terraform plan -destroy -var "instanceName=${{ github.event.inputs.instanceName }}" -var "awsRegion=${{ github.event.inputs.awsRegion }}" -var "instanceType=${{ github.event.inputs.instanceType }}" -out=tfplan
         working-directory: ./terraform
         
       # Apply the Terraform destroy plan
