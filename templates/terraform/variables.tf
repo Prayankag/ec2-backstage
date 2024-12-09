@@ -12,7 +12,7 @@ variable "vpc_cidr" {
 variable "vpc_name" {
   description = "Name of the VPC"
   type        = string
-  default     = "vpc"
+  default     = "Backstage_vpc"
 }
 
 variable "subnet_cidr" {
@@ -31,25 +31,25 @@ variable "subnet_cidr" {
 variable "subnet_name" {
   description = "Name of the subnet"
   type        = string
-  default     = "subnet"
+  default     = "Backstage_subnet"
 }
 
 variable "igw_name" {
   description = "Name of the Internet Gateway"
   type        = string
-  default     = "igw"
+  default     = "Backstage_igw"
 }
 
 variable "route_table_name" {
   description = "Name of the route table"
   type        = string
-  default     = "route-table"
+  default     = "Backstage_route-table"
 }
 
 variable "sg_name" {
   description = "Name of the security group"
   type        = string
-  default     = "sg"
+  default     = "Backstage_sg"
 }
 
 variable "ami" {
