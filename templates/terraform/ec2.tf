@@ -7,13 +7,6 @@ terraform {
   }
 }
 
-# Create a VPC
-resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cidr
-  tags = {
-    Name = var.vpc_name
-  }
-}
 
 
 # Create a subnet
@@ -98,3 +91,12 @@ resource "aws_instance" "instance" {
     Name = var.instanceName
   }
 }
+
+# Create a VPC
+resource "aws_vpc" "vpc" {
+  cidr_block = var.vpc_cidr
+  tags = {
+    Name = var.vpc_name
+  }
+}
+
