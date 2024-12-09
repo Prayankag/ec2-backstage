@@ -48,7 +48,7 @@ spec:
         Region:
           title:  AWS Region
           type: string
-          description: Name of the region where you want to create your EC2 instance, eg: us-east-1, ap-south-1 etc.
+          description: Name of the region where you want to create your EC2 instance, eg- us-east-1, ap-south-1 etc.
 
         InstanceType:
           title: Type of Instance.
