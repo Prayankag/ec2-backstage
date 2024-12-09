@@ -53,7 +53,7 @@ spec:
         InstanceType:
           title: Type of Instance.
           type: string
-          description: Type of the instance that you want to deploy, for eg: t2.medium, t3.medium etc.
+          description: Type of the instance that you want to deploy, for eg- t2.medium, t3.medium etc.
           enum:
             - t2.medium
             - t2.small
