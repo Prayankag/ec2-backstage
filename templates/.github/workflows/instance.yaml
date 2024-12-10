@@ -38,7 +38,6 @@ jobs:
     needs: display-input-values
     # Execute this step only if the action input is "apply"
     if: (${{ '${{ github.event.inputs.action }}' }} == 'apply')
-
     steps:
       # Checkout the code from the repository
       - name: Checkout Code
@@ -84,7 +83,6 @@ jobs:
       - display-input-values
     # Execute this job only if the action input is "destroy"
     if: (${{ '${{ github.event.inputs.action }}' }} == 'destroy')
-    
     steps:
       # Checkout the code from the repository
       - name: Checkout Code
