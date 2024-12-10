@@ -7,20 +7,12 @@ terraform {
   }
 }
 
-# Create a VPC
-resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cidr
-  tags = {
-    Name = var.vpc_name
-  }
-}
-
 # Create a subnet
 resource "aws_subnet" "subnet" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = var.subnet_cidr
   map_public_ip_on_launch = true
-  availability_zone       = var.availability_zone
+  # availability_zone       = var.availability_zone
   tags = {
     Name = var.subnet_name
   }
@@ -88,12 +80,21 @@ resource "aws_security_group" "sg" {
 # Launch an EC2 Instance
 resource "aws_instance" "instance" {
   ami           = var.ami
-  instance_type = var.instance_type
+  instance_type = var.instanceType
 
   subnet_id              = aws_subnet.subnet.id
   vpc_security_group_ids = [aws_security_group.sg.id]
 
   tags = {
-    Name = var.instance_name
+    Name = var.instanceName
   }
 }
+
+# Create a VPC
+resource "aws_vpc" "vpc" {
+  cidr_block = var.vpc_cidr
+  tags = {
+    Name = var.vpc_name
+  }
+}
+
