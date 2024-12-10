@@ -25,7 +25,7 @@ jobs:
   ec2_plan:
     runs-on: ubuntu-latest
     needs: display-input-values
-    if: (${{ "${{ github.event.inputs.action }}" }} == 'apply' )
+    if: (${{ '${{ github.event.inputs.action }}' }} == 'apply' )
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -78,7 +78,7 @@ jobs:
   ec2_apply:
     runs-on: ubuntu-latest
     needs: ec2_plan
-    if: (${{ "${{ github.event.inputs.action }}" }} == 'apply')
+    if: (${{ '${{ github.event.inputs.action }}' }} == 'apply')
     steps:
       - name: Download Terraform Plan
         uses: actions/download-artifact@v3
@@ -93,7 +93,7 @@ jobs:
   ec2_destroy:
     runs-on: ubuntu-latest
     needs: display-input-values
-    if: (${{ "${{ github.event.inputs.action }}" }} == 'destroy' )
+    if: (${{ '${{ github.event.inputs.action }}' }} == 'destroy' )
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
