@@ -1,16 +1,16 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: ${{ values.name }}
-  description: ${{ values.description }}
+  name: webapp-dotnet
+  description: "webapp demo"
 spec:
-  owner: ${{ values.owner }}
+  owner: prayankag
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.name }}
-  description: ${{ values.description }}
+  name: webapp-dotnet
+  description: "webapp demo"
   annotations:
      backstage.io/techdocs-ref: dir:./docs
      github.com/project-slug: ${{ values.repo_owner }}/${{ values.repo_name }}
@@ -25,20 +25,20 @@ metadata:
       ]
 spec:
   type: service
-  owner: ${{ values.owner }}
+  owner: prayankag
   lifecycle: experimental
-  system: ${{ values.name }}
+  system: webapp-dotnet
   providesApis:
-    - ${{ values.name }}
+    - webapp-dotnet
 ---
 apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
-  name: ${{ values.name }}
-  description: ${{ values.description }}
+  name: webapp-dotnet
+  description: "webapp demo"
 spec:
   type: internal
   lifecycle: experimental
-  owner: ${{ values.owner }}
-  system: ${{ values.name }}
-  definition: "${{ values.description }}"
+  owner: prayankag
+  system: webapp-dotnet
+  definition: "webapp demo"
